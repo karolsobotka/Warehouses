@@ -16,19 +16,19 @@ namespace warehouses.Services
 
 		public async Task<bool> isProductPresent(int  idProduct)
 		{
-			using SqlConnection connection = GetSqlConnection();
-			using SqlCommand command = new(
+			using SqlConnection conn = GetSqlConnection();
+			using SqlCommand comm = new(
 				"SELECT 1 FROM Product WHERE IdProduct = @idProduct",
-				connection
+				conn
 			);
 
-			command.Parameters.AddWithValue("@idProduct", idProduct);
+			comm.Parameters.AddWithValue("@idProduct", idProduct);
 
-			await connection.OpenAsync();
+			await conn.OpenAsync();
 
 			try
 			{
-				using SqlDataReader reader = await command.ExecuteReaderAsync();
+				using SqlDataReader reader = await comm.ExecuteReaderAsync();
 
 				return reader.HasRows;
 			}
@@ -40,24 +40,21 @@ namespace warehouses.Services
 
 		public async Task<Order> GetOrder(int idProduct, int amount, DateTime createdAt)
 		{
-			using SqlConnection connection = GetSqlConnection();
-			using SqlCommand command = new(
-				@"SELECT TOP 1 * FROM ""Order"" " +
-				"WHERE IdProduct = @idProduct " +
-				"AND Amount = @amount " +
-				"AND CreatedAt < @createdAt",
-				connection
+			using SqlConnection conn = GetSqlConnection();
+			using SqlCommand comm = new(
+				@"SELECT TOP 1 * FROM ""Order"" WHERE IdProduct = @idProduct 
+				AND Amount = @amount AND CreatedAt < @createdAt", conn
 			);
 
-			command.Parameters.AddWithValue("@idProduct", idProduct);
-			command.Parameters.AddWithValue("@amount", amount);
-			command.Parameters.AddWithValue("@createdAt", createdAt);
+			comm.Parameters.AddWithValue("@idProduct", idProduct);
+			comm.Parameters.AddWithValue("@amount", amount);
+			comm.Parameters.AddWithValue("@createdAt", createdAt);
 
-			await connection.OpenAsync();
+			await conn.OpenAsync();
 
 			try
 			{
-				using SqlDataReader reader = await command.ExecuteReaderAsync();
+				using SqlDataReader reader = await comm.ExecuteReaderAsync();
 
 				await reader.ReadAsync();
 
@@ -162,22 +159,22 @@ namespace warehouses.Services
 
 		public async Task<int> RegisterProduct(ProductDto productDto)
 		{
-			using SqlConnection connection = GetSqlConnection();
-			using SqlCommand command = connection.CreateCommand();
+			using SqlConnection conn = GetSqlConnection();
+			using SqlCommand comm = conn.CreateCommand();
 
-			await connection.OpenAsync();
+			await conn.OpenAsync();
 
-			command.CommandText = "AddProductToWarehouse";
-			command.CommandType = CommandType.StoredProcedure;
+			comm.CommandText = "AddProductToWarehouse";
+			comm.CommandType = CommandType.StoredProcedure;
 
-			command.Parameters.AddWithValue("@IdProduct", productDto.IdProduct);
-			command.Parameters.AddWithValue("@IdWarehouse", productDto.IdWarehouse);
-			command.Parameters.AddWithValue("@Amount", productDto.Amount);
-			command.Parameters.AddWithValue("@CreatedAt", productDto.CreatedAt);
+			comm.Parameters.AddWithValue("@IdProduct", productDto.IdProduct);
+			comm.Parameters.AddWithValue("@IdWarehouse", productDto.IdWarehouse);
+			comm.Parameters.AddWithValue("@Amount", productDto.Amount);
+			comm.Parameters.AddWithValue("@CreatedAt", productDto.CreatedAt);
 
 			try
 			{
-				return Convert.ToInt32(await command.ExecuteScalarAsync());
+				return Convert.ToInt32(await comm.ExecuteScalarAsync());
 			}
 			catch (Exception)
 			{

@@ -6,19 +6,24 @@ namespace warehouses.Models.DTO
 	public class ProductDto
 	{
 		[Required]
-		[Range(1, int.MaxValue, ErrorMessage = "Invalid product ID")]
-		public int IdProduct { get; set; }
+		[DataType(DataType.DateTime, ErrorMessage = "Niepoprawna data utworzenia produktu")]
+		public DateTime CreatedAt { get; set; }
 
 		[Required]
-		[Range(1, int.MaxValue, ErrorMessage = "Invalid product warehouse ID")]
-		public int IdWarehouse { get; set; }
-
-		[Required]
-		[Range(1, int.MaxValue, ErrorMessage = "Invalid product amount")]
+		[Range(1, int.MaxValue, ErrorMessage = "Niepoprawna ilość produktu")]
 		public int Amount { get; set; }
 
 		[Required]
-		[DataType(DataType.DateTime, ErrorMessage = "Invalid product creation date")]
-		public DateTime CreatedAt { get; set; }
+		[Range(1, int.MaxValue, ErrorMessage = "niepopranwny id magazynu")]
+		public int IdWarehouse { get; set; }
+
+		
+
+		[Required]
+		[Range(1, int.MaxValue, ErrorMessage = "niepoprawne id produktu")]
+		public int IdProduct { get; set; }
+
+
+
 	}
 }

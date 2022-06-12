@@ -20,16 +20,16 @@ namespace warehouses.Controllers
 		public async Task<IActionResult> RegisterProduct([FromBody] ProductDto productDto)
 		{
 			if (!await _databaseService.isProductPresent(productDto.IdProduct))
-				return NotFound($"Couldn't find product of ID '{productDto.IdProduct}'");
+				return NotFound($"Nie można znaleźć produktu z ID '{productDto.IdProduct}'");
 
 			var order = await _databaseService
 				.GetOrder(productDto.IdProduct, productDto.Amount, productDto.CreatedAt);
 
 			if (order == null)
-				return NotFound($"Couldn't find order for product of ID '{productDto.IdProduct}'");
+				return NotFound($"Nie można znaleźć zamówienia produktu o id '{productDto.IdProduct}'");
 
 			if (await _databaseService.isCompleted(order))
-				return UnprocessableEntity($"Order of ID {order.IdOrder} has been completed");
+				return UnprocessableEntity($"zamówienie z ID {order.IdOrder} zostało zakończoneS");
 
 			int id = await _databaseService.RegisterProduct(order.IdOrder, productDto);
 
